@@ -30,11 +30,9 @@ class Weather : AppCompatActivity(), LoaderManager.LoaderCallbacks<JSONObject> {
     private var context: Context? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_weather)
+        setContentView(R.layout.loading)
         context = this
         Log.i("TEST", "Button clicked")
-        val pb = findViewById(R.id.pb) as ProgressBar
-        pb.visibility = ProgressBar.VISIBLE
         val con = this@Weather.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val info = con.activeNetworkInfo
         if (info != null) {
@@ -42,7 +40,8 @@ class Weather : AppCompatActivity(), LoaderManager.LoaderCallbacks<JSONObject> {
             loaderManager.initLoader(1, Bundle(), this).forceLoad()
         } else {
             Log.i("TEST", "Network not working")
-            pb.visibility = ProgressBar.INVISIBLE
+            //pb.visibility = ProgressBar.INVISIBLE
+            setContentView(R.layout.no_internet)
             Toast.makeText(this@Weather, "Internet is not working", Toast.LENGTH_SHORT).show()
         }
     }
@@ -67,16 +66,15 @@ class Weather : AppCompatActivity(), LoaderManager.LoaderCallbacks<JSONObject> {
     }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.setting) {
-            //TODO("not implemented")
+            startActivity(Intent(getContext(),Settings::class.java))
             return true
         } else if (item.itemId == R.id.about) {
             Log.i("TEST", "about working")
-            //TODO("not implemented")
             val al = AlertDialog.Builder(context)
             al.setTitle("About")
             al.setMessage("this app is an open source project in github maintained by mayank-2016 if want " + "to contribute can visit the ripo.")
             al.setPositiveButton("OK") { dialogInterface, i ->
-                //TODO(" do nothing ")
+                // Do nothing
             }
             al.setNegativeButton("GIST",{dialogInterface, i ->
                 val i = Intent(Intent.ACTION_VIEW)
@@ -91,14 +89,16 @@ class Weather : AppCompatActivity(), LoaderManager.LoaderCallbacks<JSONObject> {
 
     override fun onLoadFinished(loader: Loader<JSONObject>, json: JSONObject?) {
         if (json == null) {
+            setContentView(R.layout.no_internet)
             Log.i("TEST", "Broken json")
-            val pb = findViewById(R.id.pb) as ProgressBar
-            pb.visibility = ProgressBar.INVISIBLE
+            //val pb = findViewById(R.id.pb) as ProgressBar
+            //pb.visibility = ProgressBar.INVISIBLE
             Toast.makeText(this@Weather, "Internet is not working", Toast.LENGTH_SHORT).show()
         } else {
+            setContentView(R.layout.activity_weather)
             Log.i("TEST", "in On Load finished")
-            val pb = findViewById(R.id.pb) as ProgressBar
-            pb.visibility = ProgressBar.INVISIBLE
+            //val pb = findViewById(R.id.pb) as ProgressBar
+            //pb.visibility = ProgressBar.INVISIBLE
             //Toast.makeText(Weather.this,"Done",Toast.LENGTH_SHORT).show();
             try {
                 val summary = findViewById(R.id.tv2) as TextView
