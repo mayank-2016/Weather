@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1">
+
+    <TextView
+        android:id="@+id/day"
+        android:textColor="@android:color/black"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tuesday"
+        android:textSize="20dp" />
+
+    <TextView
+        android:id="@+id/temp"
+        android:textColor="@android:color/black"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/day"
+        android:layout_below="@+id/day"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="10dp"
+        android:text="Min 23 C /Max 43 C" />
+
+    <TextView
+        android:id="@+id/rain"
+        android:textColor="@android:color/black"
+        android:layout_width="wrap_content"
+        android:layout_height="25dp"
+        android:text="20%"
+        android:textSize="20dp"
+        android:gravity="center"
+        android:layout_marginRight="20dp"
+        android:layout_alignBottom="@+id/temp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@+id/day" />
+</RelativeLayout>

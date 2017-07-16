@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Weather</string>
+    <string name="forcast_name">Forecast</string>
+    <string name="button_forecast">Forecast</string>
+</resources>
