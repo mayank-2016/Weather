@@ -18,11 +18,11 @@ import java.net.URL
  * Created by m2k on 10/7/17.
  */
 
-class Parser(context: Context) : AsyncTaskLoader<JSONObject>(context) {
+class Parser(context: Context, longi: Double?, lati: Double?) : AsyncTaskLoader<JSONObject>(context) {
     private var mlink: String? = null
 
     init {
-        mlink = "https://api.darksky.net/forecast/4b4" + "dcd631a0b271e6d9623d8be27caeb/28.7041,77.1025"
+        mlink = "https://api.darksky.net/forecast/4b4" + "dcd631a0b271e6d9623d8be27caeb/"+lati.toString()+","+longi.toString()
     }
 
     override fun loadInBackground(): JSONObject? {

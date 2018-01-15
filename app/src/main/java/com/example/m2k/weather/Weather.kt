@@ -3,31 +3,30 @@ package com.example.m2k.weather
 import android.app.AlertDialog
 import android.app.LoaderManager
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.Loader
 import android.net.ConnectivityManager
-import android.net.NetworkInfo
-import android.net.Uri
-import android.support.v7.app.ActionBar
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import android.widget.Button
 import android.widget.ImageView
-import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import com.google.android.gms.location.FusedLocationProviderClient
 
 import org.json.JSONException
 import org.json.JSONObject
 
 class Weather : AppCompatActivity(), LoaderManager.LoaderCallbacks<JSONObject> {
+
     private var context: Context? = null
+    private var mFusedLocationClient:FusedLocationProviderClient?=null
+    public var dlati : Double?=28.7041
+    public var dlongi : Double?  =77.1025
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.loading)
@@ -48,12 +47,14 @@ class Weather : AppCompatActivity(), LoaderManager.LoaderCallbacks<JSONObject> {
 
     fun forcast(view: View) {
         val i = Intent(this@Weather, Forcast::class.java)
+        i.putExtra("longi",dlongi)
+        i.putExtra("lati",dlati)
         startActivity(i)
     }
 
     override fun onCreateLoader(i: Int, bundle: Bundle): Loader<JSONObject> {
         Log.i("TEST", "onCreateLoader called")
-        return Parser(this@Weather)
+        return Parser(this@Weather,dlati,dlongi)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -72,15 +73,10 @@ class Weather : AppCompatActivity(), LoaderManager.LoaderCallbacks<JSONObject> {
             Log.i("TEST", "about working")
             val al = AlertDialog.Builder(context)
             al.setTitle("About")
-            al.setMessage("this app is an open source project in github maintained by mayank-2016 if want " + "to contribute can visit the ripo.")
+            al.setMessage("This is a weather forcasting application, which gives us forcast on future days. We can set the place by giving its longitude and lattitude.")
             al.setPositiveButton("OK") { dialogInterface, i ->
                 // Do nothing
             }
-            al.setNegativeButton("GIST",{dialogInterface, i ->
-                val i = Intent(Intent.ACTION_VIEW)
-                i.setData(Uri.parse("http://www.google.com"))
-                startActivity(i)
-            })
             al.show()
             return true
         } else
@@ -101,10 +97,10 @@ class Weather : AppCompatActivity(), LoaderManager.LoaderCallbacks<JSONObject> {
             //pb.visibility = ProgressBar.INVISIBLE
             //Toast.makeText(Weather.this,"Done",Toast.LENGTH_SHORT).show();
             try {
-                val summary = findViewById(R.id.tv2) as TextView
-                val temp = findViewById(R.id.tv3) as TextView
-                val rain = findViewById(R.id.tv4) as TextView
-                val i = findViewById(R.id.iv) as ImageView
+                val summary = findViewById<TextView>(R.id.tv2)
+                val temp = findViewById<TextView>(R.id.tv3)
+                val rain = findViewById<TextView>(R.id.tv4)
+                val i = findViewById<ImageView>(R.id.iv)
                 val s = json.getJSONObject("currently").getString("summary")
                 val a1 = java.lang.Double.parseDouble(json.getJSONObject("currently").getString("precipProbability")) * 100
                 var b1: Double? = 5 * (java.lang.Double.parseDouble(json.getJSONObject("currently").getString("temperature")) - 32)
@@ -125,11 +121,20 @@ class Weather : AppCompatActivity(), LoaderManager.LoaderCallbacks<JSONObject> {
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if(resultCode==1){
+            val longi = data?.extras?.getDouble("longi")
+            val lati = data?.extras?.getDouble("lati")
+            dlongi = longi
+            dlati = lati
+        }
+    }
+
     override fun onLoaderReset(loader: Loader<JSONObject>) {
         Log.i("TEST", "Reseting UI")
-        val summary = findViewById(R.id.tv2) as TextView
-        val temp = findViewById(R.id.tv3) as TextView
-        val rain = findViewById(R.id.tv4) as TextView
+        val summary = findViewById<TextView>(R.id.tv2)
+        val temp = findViewById<TextView>(R.id.tv3)
+        val rain = findViewById<TextView>(R.id.tv4)
         summary.text = ""
         rain.text = ""
         temp.text = ""
